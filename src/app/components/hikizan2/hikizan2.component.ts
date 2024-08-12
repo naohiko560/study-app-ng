@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { CommonService } from '../../services/common.service';
 
 @Component({
-  selector: 'app-tashizan1',
+  selector: 'app-hikizan2',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './tashizan1.component.html',
-  styleUrls: ['./tashizan1.component.scss']
+  templateUrl: './hikizan2.component.html',
+  styleUrls: ['./hikizan2.component.scss']
 })
-export class Tashizan1Component implements OnInit {
+export class Hikizan2Component implements OnInit {
 
   // 生成する問題文の数字
   num1: number = 0;
@@ -59,7 +59,7 @@ export class Tashizan1Component implements OnInit {
   finalText: string | null = '';
 
   // ボタンに表示する数字
-  buttons: number[] = Array.from({ length: 6 }, (_, i) => i);
+  buttons: number[] = Array.from({ length: 11 }, (_, i) => i);
 
   constructor(private commonService: CommonService) { }
 
@@ -77,10 +77,16 @@ export class Tashizan1Component implements OnInit {
     // 問題生成
     let validProblem = false;
     while (!validProblem) {
-      const { num1, num2 } = this.commonService.generateNumbers(5);
-      this.num1 = num1;
-      this.num2 = num2;
-      validProblem = this.commonService.isProblemValid(this.num1, this.num2, this.prevNum1, this.prevNum2, true, 5);
+      const { num1, num2 } = this.commonService.generateNumbers(10);
+      // num1がnum2より小さい場合は入れ替えて、マイナスにならないようにする
+      if (num1 < num2) {
+        this.num1 = num2;
+        this.num2 = num1;
+      } else {
+        this.num1 = num1;
+        this.num2 = num2;
+      }
+      validProblem = this.commonService.isProblemValid(this.num1, this.num2, this.prevNum1, this.prevNum2, false, 10);
     }
 
     this.prevNum1 = this.num1;
@@ -98,7 +104,7 @@ export class Tashizan1Component implements OnInit {
   // 答えをチェックする関数
   checkAnswer(): void {
     const { isCorrect, correctAnswer, resultMessage, finalText, updatedCorrectCount } =
-      this.commonService.checkAnswer(this.num1, this.num2, this.buttonText!, true, this.correctCount, this.total, this.count);
+      this.commonService.checkAnswer(this.num1, this.num2, this.buttonText!, false, this.correctCount, this.total, this.count);
 
     this.resultMessage = resultMessage;
     this.correctText = !isCorrect ? 'せいかいは、' : '';

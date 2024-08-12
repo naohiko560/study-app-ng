@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { CommonService } from '../../services/common.service';
 
 @Component({
-  selector: 'app-tashizan1',
+  selector: 'app-tashizan2',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './tashizan1.component.html',
-  styleUrls: ['./tashizan1.component.scss']
+  templateUrl: './tashizan2.component.html',
+  styleUrls: ['./tashizan2.component.scss']
 })
-export class Tashizan1Component implements OnInit {
+export class Tashizan2Component implements OnInit {
 
   // 生成する問題文の数字
   num1: number = 0;
@@ -59,7 +59,7 @@ export class Tashizan1Component implements OnInit {
   finalText: string | null = '';
 
   // ボタンに表示する数字
-  buttons: number[] = Array.from({ length: 6 }, (_, i) => i);
+  buttons: number[] = Array.from({ length: 11 }, (_, i) => i);
 
   constructor(private commonService: CommonService) { }
 
@@ -77,10 +77,10 @@ export class Tashizan1Component implements OnInit {
     // 問題生成
     let validProblem = false;
     while (!validProblem) {
-      const { num1, num2 } = this.commonService.generateNumbers(5);
+      const { num1, num2 } = this.commonService.generateNumbers(10);
       this.num1 = num1;
       this.num2 = num2;
-      validProblem = this.commonService.isProblemValid(this.num1, this.num2, this.prevNum1, this.prevNum2, true, 5);
+      validProblem = this.commonService.isProblemValid(this.num1, this.num2, this.prevNum1, this.prevNum2, true, 10);
     }
 
     this.prevNum1 = this.num1;

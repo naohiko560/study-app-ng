@@ -22,9 +22,9 @@ export class CommonService {
   }
 
   // 数字を生成する共通関数
-  generateNumbers(maxValue: number = 6): { num1: number, num2: number } {
-    const num1 = Math.floor(Math.random() * maxValue);
-    const num2 = Math.floor(Math.random() * maxValue);
+  generateNumbers(maxValue: number): { num1: number, num2: number } {
+    const num1 = Math.floor(Math.random() * (maxValue - 1));
+    const num2 = Math.floor(Math.random() * (maxValue - 1));
     return { num1, num2 };
   }
 
@@ -57,8 +57,12 @@ export class CommonService {
   }
 
   // 問題文が有効かどうか確認する共通関数
-  isProblemValid(num1: number, num2: number, prevNum1: number, prevNum2: number, isAddition: boolean): boolean {
+  isProblemValid(num1: number, num2: number, prevNum1: number, prevNum2: number, isAddition: boolean, maxSum: number): boolean {
+
+    // 足し算か引き算か判定
     const sum = isAddition ? num1 + num2 : num1 - num2;
-    return !(num1 === prevNum1 && num2 === prevNum2) && sum >= 0 && sum <= 5;
+
+    // 前回と同じ問題でない、かつ 答えがプラス かつ 答えが最大値以下なら有効
+    return !(num1 === prevNum1 && num2 === prevNum2) && sum >= 0 && sum <= maxSum;
   }
 }

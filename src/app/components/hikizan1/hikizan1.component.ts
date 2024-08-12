@@ -59,7 +59,7 @@ export class Hikizan1Component implements OnInit {
   finalText: string | null = '';
 
   // ボタンに表示する数字
-  buttons: number[] = [0, 1, 2, 3, 4, 5];
+  buttons: number[] = Array.from({ length: 6 }, (_, i) => i);
 
   constructor(private commonService: CommonService) { }
 
@@ -77,7 +77,7 @@ export class Hikizan1Component implements OnInit {
     // 問題生成
     let validProblem = false;
     while (!validProblem) {
-      const { num1, num2 } = this.commonService.generateNumbers();
+      const { num1, num2 } = this.commonService.generateNumbers(5);
       // num1がnum2より小さい場合は入れ替えて、マイナスにならないようにする
       if (num1 < num2) {
         this.num1 = num2;
@@ -86,7 +86,7 @@ export class Hikizan1Component implements OnInit {
         this.num1 = num1;
         this.num2 = num2;
       }
-      validProblem = this.commonService.isProblemValid(this.num1, this.num2, this.prevNum1, this.prevNum2, false);
+      validProblem = this.commonService.isProblemValid(this.num1, this.num2, this.prevNum1, this.prevNum2, false, 5);
     }
 
     this.prevNum1 = this.num1;
