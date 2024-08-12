@@ -1,5 +1,6 @@
-import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { CommonService } from '../../services/common.service';
 
 @Component({
   selector: 'app-tashizan1',
@@ -60,24 +61,11 @@ export class Tashizan1Component implements OnInit {
   // ボタンに表示する数字
   buttons: number[] = [0, 1, 2, 3, 4, 5];
 
-  // 音声ファイルの設定
-  correctAudio = 'sounds/correct.mp3';
-  incorrectAudio = 'sounds/incorrect.mp3';
-  startAudio = 'sounds/start.mp3';
-
-  constructor(@Inject(PLATFORM_ID) private platformId: object) { }
+  constructor(private commonService: CommonService) { }
 
   ngOnInit(): void {
     // 問題文を表示
     this.displayProblem();
-  }
-
-  // 音を再生する関数
-  playSound(src: string): void {
-    if (isPlatformBrowser(this.platformId)) {
-      const audio = new Audio(src);
-      audio.play();
-    }
   }
 
   // 数字を生成する関数
@@ -89,7 +77,7 @@ export class Tashizan1Component implements OnInit {
   // 問題文を表示する関数
   displayProblem(): void {
     // スタート音を再生
-    this.playSound(this.startAudio);
+    this.commonService.playSound(this.commonService.startAudio);
     
     // ボタンの色をリセット
     this.selectedButtonIndex = null;
@@ -126,19 +114,19 @@ export class Tashizan1Component implements OnInit {
 
     // 正解の場合
     if (this.buttonText === correctAnswer && this.count < this.total) {
-      this.playSound(this.correctAudio);
+      this.commonService.playSound(this.commonService.correctAudio);
       this.resultMessage = 'せいかい！よくできました 🎉';
       this.showNextButton = true;
       this.correctCount++;  // 正解数のカウント
     } else if (this.buttonText !== correctAnswer && this.count < this.total) {
       // 不正解の場合
-      this.playSound(this.incorrectAudio);
+      this.commonService.playSound(this.commonService.incorrectAudio);
       this.resultMessage = 'ざんねん 😢';
       this.correctText = 'せいかいは、';
       this.correctNum = correctAnswer;
       this.showNextButton = true;
     } else if (this.buttonText === correctAnswer && this.count === this.total) {
-      this.playSound(this.correctAudio);
+      this.commonService.playSound(this.commonService.correctAudio);
       this.resultMessage = 'せいかい！よくできました 🎉';
       this.correctCount++;  // 正解数のカウント
 
@@ -147,7 +135,7 @@ export class Tashizan1Component implements OnInit {
       this.finalText = `あなたのてんすうは、${totalPoint}てん 🎉`;
       this.showNewButton = true;
     } else if (this.buttonText !== correctAnswer && this.count === this.total) {
-      this.playSound(this.incorrectAudio);
+      this.commonService.playSound(this.commonService.incorrectAudio);
       this.resultMessage = 'ざんねん 😢';
       this.correctText = 'せいかいは、';
       this.correctNum = correctAnswer;
