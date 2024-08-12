@@ -20,4 +20,45 @@ export class CommonService {
       audio.play();
     }
   }
+
+  // 数字を生成する共通関数
+  generateNumbers(maxValue: number = 6): { num1: number, num2: number } {
+    const num1 = Math.floor(Math.random() * maxValue);
+    const num2 = Math.floor(Math.random() * maxValue);
+    return { num1, num2 };
+  }
+
+  // 答えをチェックする共通関数
+  checkAnswer(
+    num1: number, num2: number, userAnswer: number, isAddition: boolean,
+    correctCount: number, total: number, count: number
+  ): { isCorrect: boolean, correctAnswer: number, resultMessage: string, finalText: string | null, updatedCorrectCount: number } {
+    const correctAnswer = isAddition ? num1 + num2 : num1 - num2;
+    let resultMessage = '';
+    let finalText: string | null = null;
+    let updatedCorrectCount = correctCount;
+
+    if (userAnswer === correctAnswer) {
+      this.playSound(this.correctAudio);
+      resultMessage = 'せいかい！よくできました 🎉';
+      updatedCorrectCount++;
+    } else {
+      this.playSound(this.incorrectAudio);
+      resultMessage = `ざんねん 😢 せいかいは、${correctAnswer}`;
+    }
+
+    // 最終問題の場合、点数表示
+    if (count === total) {
+      const totalPoint = (updatedCorrectCount / total) * 100;
+      finalText = `あなたのてんすうは、${totalPoint}てん 🎉`;
+    }
+
+    return { isCorrect: userAnswer === correctAnswer, correctAnswer, resultMessage, finalText, updatedCorrectCount };
+  }
+
+  // 問題文が有効かどうか確認する共通関数
+  isProblemValid(num1: number, num2: number, prevNum1: number, prevNum2: number, isAddition: boolean): boolean {
+    const sum = isAddition ? num1 + num2 : num1 - num2;
+    return !(num1 === prevNum1 && num2 === prevNum2) && sum >= 0 && sum <= 5;
+  }
 }

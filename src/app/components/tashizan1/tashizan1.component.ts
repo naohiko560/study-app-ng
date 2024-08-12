@@ -47,7 +47,7 @@ export class Tashizan1Component implements OnInit {
   total: number = 5;
 
   // 問題数の表示
-  totalText: string | number = `もんだいすう ${this.count} / ${this.total}`
+  totalText: string | number = `もんだいすう ${this.count} / ${this.total}`;
 
   // 選択されたボタンの色変更用
   selectedButtonIndex: number | null = null;
@@ -56,7 +56,7 @@ export class Tashizan1Component implements OnInit {
   isClicked = false;
 
   // 最終結果表示
-  finalText: string = '';
+  finalText: string | null = '';
 
   // ボタンに表示する数字
   buttons: number[] = [0, 1, 2, 3, 4, 5];
@@ -64,38 +64,25 @@ export class Tashizan1Component implements OnInit {
   constructor(private commonService: CommonService) { }
 
   ngOnInit(): void {
-    // 問題文を表示
     this.displayProblem();
-  }
-
-  // 数字を生成する関数
-  generateNumbers(): void {
-    this.num1 = Math.floor(Math.random() * 6);
-    this.num2 = Math.floor(Math.random() * 6);
   }
 
   // 問題文を表示する関数
   displayProblem(): void {
-    // スタート音を再生
     this.commonService.playSound(this.commonService.startAudio);
-    
-    // ボタンの色をリセット
     this.selectedButtonIndex = null;
-
-    // ボタンの有効無効をリセット
     this.isClicked = false;
+    this.totalText = `もんだいすう ${this.count} / ${this.total}`;
 
-    // 問題数の表示
-    this.totalText = `もんだいすう ${this.count} / ${this.total}`
-    // 問題文を生成
-    this.generateNumbers();
-
-    // 同じ問題文や、合計が5を超える場合は再生成
-    while ((this.num1 === this.prevNum1 && this.num2 === this.prevNum2) || this.num1 + this.num2 > 5) {
-      this.generateNumbers();
+    // 問題生成
+    let validProblem = false;
+    while (!validProblem) {
+      const { num1, num2 } = this.commonService.generateNumbers();
+      this.num1 = num1;
+      this.num2 = num2;
+      validProblem = this.commonService.isProblemValid(this.num1, this.num2, this.prevNum1, this.prevNum2, true);
     }
 
-    // 前回の問題文を更新
     this.prevNum1 = this.num1;
     this.prevNum2 = this.num2;
   }
@@ -110,39 +97,18 @@ export class Tashizan1Component implements OnInit {
 
   // 答えをチェックする関数
   checkAnswer(): void {
-    const correctAnswer = this.num1 + this.num2;
+    const { isCorrect, correctAnswer, resultMessage, finalText, updatedCorrectCount } =
+      this.commonService.checkAnswer(this.num1, this.num2, this.buttonText!, true, this.correctCount, this.total, this.count);
 
-    // 正解の場合
-    if (this.buttonText === correctAnswer && this.count < this.total) {
-      this.commonService.playSound(this.commonService.correctAudio);
-      this.resultMessage = 'せいかい！よくできました 🎉';
+    this.resultMessage = resultMessage;
+    this.correctText = !isCorrect ? 'せいかいは、' : '';
+    this.correctNum = !isCorrect ? correctAnswer : null;
+    this.correctCount = updatedCorrectCount;
+
+    if (this.count < this.total) {
       this.showNextButton = true;
-      this.correctCount++;  // 正解数のカウント
-    } else if (this.buttonText !== correctAnswer && this.count < this.total) {
-      // 不正解の場合
-      this.commonService.playSound(this.commonService.incorrectAudio);
-      this.resultMessage = 'ざんねん 😢';
-      this.correctText = 'せいかいは、';
-      this.correctNum = correctAnswer;
-      this.showNextButton = true;
-    } else if (this.buttonText === correctAnswer && this.count === this.total) {
-      this.commonService.playSound(this.commonService.correctAudio);
-      this.resultMessage = 'せいかい！よくできました 🎉';
-      this.correctCount++;  // 正解数のカウント
-
-      // 最終点数表示
-      const totalPoint = (this.correctCount / this.total) * 100;
-      this.finalText = `あなたのてんすうは、${totalPoint}てん 🎉`;
-      this.showNewButton = true;
-    } else if (this.buttonText !== correctAnswer && this.count === this.total) {
-      this.commonService.playSound(this.commonService.incorrectAudio);
-      this.resultMessage = 'ざんねん 😢';
-      this.correctText = 'せいかいは、';
-      this.correctNum = correctAnswer;
-
-      // 最終点数表示
-      const totalPoint = (this.correctCount / this.total) * 100;
-      this.finalText = `あなたのてんすうは、${totalPoint}てん 🎉`;
+    } else {
+      this.finalText = finalText;
       this.showNewButton = true;
     }
   }

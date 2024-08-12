@@ -93,4 +93,43 @@ button:disabled {
   font-size: 60px;
   margin: 0;
 }
+
+/*=====================================================================
+# ゲーム内共通
+==================================================================== */
+.game .main {
+  text-align: center;
+}
+.game .header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.game .problem {
+  font-size: 2em;
+  margin: 20px 0;
+}
+.game .button-lists {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.game .button-list {
+  margin: 10px 0;
+}
+.game .button {
+  margin: 5px;
+  padding: 10px 20px;
+  font-size: 1em;
+}
+.game .result,
+.game .correct,
+.game .correct-num {
+  font-size: 1.5em;
+  margin: 10px 0;
+}
+.game .next {
+  cursor: pointer;
+  color: white;
+}
 /*# sourceMappingURL=styles.css.map */
