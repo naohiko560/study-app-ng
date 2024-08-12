@@ -68,9 +68,6 @@ export class Tashizan1Component implements OnInit {
   constructor(@Inject(PLATFORM_ID) private platformId: object) { }
 
   ngOnInit(): void {
-    // スタート音を再生
-    this.playSound(this.startAudio);
-
     // 問題文を表示
     this.displayProblem();
   }
@@ -91,6 +88,9 @@ export class Tashizan1Component implements OnInit {
 
   // 問題文を表示する関数
   displayProblem(): void {
+    // スタート音を再生
+    this.playSound(this.startAudio);
+    
     // ボタンの色をリセット
     this.selectedButtonIndex = null;
 
