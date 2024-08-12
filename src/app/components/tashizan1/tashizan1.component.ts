@@ -1,6 +1,5 @@
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { CommonService } from '../../services/common.service';
 
 @Component({
   selector: 'app-tashizan1',
@@ -66,7 +65,7 @@ export class Tashizan1Component implements OnInit {
   incorrectAudio = 'sounds/incorrect.mp3';
   startAudio = 'sounds/start.mp3';
 
-  constructor(@Inject(PLATFORM_ID) private platformId: object, private commonService: CommonService) { }
+  constructor(@Inject(PLATFORM_ID) private platformId: object) { }
 
   ngOnInit(): void {
     // 問題文を表示
