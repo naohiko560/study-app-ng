@@ -32,7 +32,7 @@ jobs:
 
       # Angularアプリをビルド
       - name: Build Angular app
-        run: ng build -- --prod
+        run: npm run build --prod
 
       # ビルド成果物をFTPサーバーにデプロイ
       - name: FTP-Deploy-Action
