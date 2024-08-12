@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "build:prod": "ng build --configuration production --base-href /naohikoblog.com/public_html/study-app-ng/",
+    "build:prod": "ng build --configuration production --base-href /public_html/study-app-ng/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:study-app-ng": "node dist/study-app-ng/server/server.mjs"
