@@ -44,7 +44,7 @@ export class CommonService {
       updatedCorrectCount++;
     } else {
       this.playSound(this.incorrectAudio);
-      resultMessage = `ざんねん 😢 せいかいは、${correctAnswer}`;
+      resultMessage = `ざんねん 😢`;
     }
 
     // 最終問題の場合、点数表示

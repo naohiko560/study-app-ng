@@ -52,21 +52,12 @@
   border-radius: 10px;
 }
 
-// ボタンのスタイル
-button:disabled {
-  pointer-events: none;
-}
-
 .answer-button {
   background-color: #04ff00;
 }
 
 .problem {
   font-size: 60px;
-}
-
-.button-lists {
-  margin-top: 20px;
 }
 
 .js-checkAnswer {
@@ -98,19 +89,15 @@ button:disabled {
 # ゲーム内共通
 ==================================================================== */
 .game {
-  .main {
-    text-align: center;
-  }
-
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  .total {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin: 0;
   }
 
   .problem {
-    font-size: 2em;
-    margin: 20px 0;
+    font-size: 3em;
+    margin: 10px 0 0;
   }
 
   .button-lists {
@@ -128,6 +115,16 @@ button:disabled {
     margin: 5px;
     padding: 10px 30px;
     font-size: 2em;
+
+    &:disabled {
+      pointer-events: none;
+    }
+  }
+
+  .button.next,
+  .button.new {
+    font-size: 1em;
+    font-weight: bold;
   }
 
   .result,
@@ -140,5 +137,9 @@ button:disabled {
   .next {
     cursor: pointer;
     color: white;
+  }
+
+  .final {
+    margin: 10px 0;
   }
 }
