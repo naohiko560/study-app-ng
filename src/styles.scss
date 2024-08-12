@@ -40,7 +40,7 @@
 }
 
 /*=====================================================================
-# たしざんゲーム：共通
+# ゲーム：共通
 ==================================================================== */
 .button {
   margin-top: 10px;
@@ -52,12 +52,9 @@
   border-radius: 10px;
 }
 
-.pointer-none {
+// ボタンのスタイル
+button:disabled {
   pointer-events: none;
-}
-
-.display-none {
-  display: none;
 }
 
 .answer-button {
