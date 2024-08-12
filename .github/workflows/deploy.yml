@@ -1,0 +1,45 @@
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'app/**'
+      - 'src/**'
+      - 'angular.json'
+      - 'package.json'
+      - 'tsconfig.json'
+      - 'tslint.json'
+name: StudyAppDeploy
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    steps:
+      # リポジトリをチェックアウト
+      - uses: actions/checkout@v2
+      
+      # Node.jsのセットアップ
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'  # 使用するNode.jsのバージョンを指定
+
+      # npmパッケージをインストール
+      - name: Install dependencies
+        run: npm install
+
+      # Angularアプリをビルド
+      - name: Build Angular app
+        run: npm run build -- --prod
+
+      # ビルド成果物をFTPサーバーにデプロイ
+      - name: FTP-Deploy-Action
+        uses: SamKirkland/FTP-Deploy-Action@2.0.0
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          LOCAL_DIR: dist/study-app-ng/  # Angularのビルド成果物が生成されるディレクトリ
+          REMOTE_DIR: ${{ secrets.REMOTE_DIR }}
