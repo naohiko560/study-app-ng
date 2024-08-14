@@ -77,6 +77,13 @@ export class TashizanDojo2Component implements OnInit {
   // 左辺・右辺の数を設定
   LRNum: number = 9;
 
+  // 答えの表示
+  showCorrect: boolean = false;
+
+  showAnswerButton: boolean = false;
+
+  showProblem: boolean = true;
+
   constructor(private commonService: CommonService) { }
 
   ngOnInit(): void {
@@ -149,6 +156,7 @@ export class TashizanDojo2Component implements OnInit {
           this.finalTime = `かかったじかん: ${seconds}びょう`
         }
         this.showFinalTime = true;
+        this.showAnswerButton = false;
         this.commonService.playSound(this.commonService.finalAudio);
       }
     }
@@ -161,7 +169,21 @@ export class TashizanDojo2Component implements OnInit {
       this.showNextButton = false;
     }
 
+    this.correctNum = this.num1 + this.num2;
+    this.showCorrect = true;
+    if ((this.clickCount !== this.problemList.length)) {
+      this.showAnswerButton = true;
+    }
+    this.showNextButton = false;
+    this.showProblem = false;
     // this.checkAnswer();
+  }
+  
+  answerProblem() {
+    this.showAnswerButton = false;
+    this.showNextButton = true;
+    this.showCorrect = false;
+    this.showProblem = true;
   }
 
   // 答えをチェックする関数
@@ -219,6 +241,8 @@ export class TashizanDojo2Component implements OnInit {
     this.shuffleProblemList();
 
     // 問題文の表示
+    this.showProblem = true;
+    this.showCorrect = false;
     this.displayProblem();
   }
 }

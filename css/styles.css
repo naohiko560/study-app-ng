@@ -94,9 +94,13 @@
   font-weight: bold;
   margin: 0;
 }
-.game .problem {
+.game .problem,
+.game .correct.problem {
   font-size: 3em;
   margin: 10px 0 0;
+}
+.game .correct.problem {
+  color: #ff0000;
 }
 .game .button-lists {
   display: flex;

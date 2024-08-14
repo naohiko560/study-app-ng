@@ -95,9 +95,14 @@
     margin: 0;
   }
 
-  .problem {
+  .problem,
+  .correct.problem {
     font-size: 3em;
     margin: 10px 0 0;
+  }
+
+  .correct.problem {
+    color: #f53d3d;
   }
 
   .button-lists {
@@ -138,14 +143,14 @@
   .text.final.dojo {
     margin-top: 20px;
   }
-  
+
   .result,
   .correct,
   .correct-num {
     font-size: 1.5em;
     margin: 10px 0;
   }
-  
+
   .next {
     cursor: pointer;
     color: white;
