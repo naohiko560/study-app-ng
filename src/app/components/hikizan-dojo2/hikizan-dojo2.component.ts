@@ -3,14 +3,14 @@ import { CommonModule } from '@angular/common';
 import { CommonService } from '../../services/common.service';
 
 @Component({
-  selector: 'app-tashizan-dojo',
+  selector: 'app-hikizan-dojo',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './tashizan-dojo2.component.html',
-  styleUrl: './tashizan-dojo2.component.scss'
+  templateUrl: './hikizan-dojo2.component.html',
+  styleUrl: './hikizan-dojo2.component.scss'
 })
 
-export class TashizanDojo2Component implements OnInit {
+export class HikizanDojo2Component implements OnInit {
 
   // 生成する問題文の数字
   num1: number = 0;
@@ -75,7 +75,7 @@ export class TashizanDojo2Component implements OnInit {
   currentProblemIndex: number = 0;
 
   // 左辺・右辺の数を設定
-  LRNum: number = 9;
+  LRNum: number = 10;
 
   constructor(private commonService: CommonService) { }
 
@@ -90,8 +90,8 @@ export class TashizanDojo2Component implements OnInit {
   generateProblemList(): void {
     for (let i = 0; i <= this.LRNum; i++) {
       for (let j = 0; j <= this.LRNum; j++) {
-        // 答えが10以下の組み合わせのみ追加
-        if (i + j <= 10 && i !== 0) {
+        // 問題文や答えの条件を追加
+        if (i - j <= 10 && i !== 0 && j !== 0 && 0 <= i - j && j !== 10) {
           this.problemList.push({ num1: i, num2: j });
         }
       }

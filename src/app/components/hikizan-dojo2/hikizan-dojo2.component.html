@@ -1,0 +1,7 @@
+<div class="game">
+  <p class="total">{{ totalText }}</p>
+  <div class="problem">{{ num1 }} - {{ num2 }}</div>
+  <button class="button next dojo" *ngIf="showNextButton" (click)="nextProblem()">つぎのもんだい</button>
+  <p class="text final dojo" *ngIf="showFinalTime">{{ finalTime }}</p>
+  <button class="button new dojo" *ngIf="showNewButton" (click)="newProblem() ">もういちどちょうせん</button>
+</div>
