@@ -65,4 +65,16 @@ export class CommonService {
     // 前回と同じ問題でない、かつ 答えがプラス かつ 答えが最大値以下なら有効
     return !(num1 === prevNum1 && num2 === prevNum2) && sum >= 0 && sum <= maxSum;
   }
+
+  /*=====================================================================
+  # 道場用
+  ==================================================================== */
+  // 配列をシャッフルする関数
+  shuffle(array: number[]): number[] {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
 }
