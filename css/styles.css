@@ -129,6 +129,7 @@
 .game .next {
   cursor: pointer;
   color: white;
+  margin-top: 10px;
 }
 .game .final {
   margin: 10px 0;

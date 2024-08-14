@@ -126,17 +126,18 @@
     font-size: 1em;
     font-weight: bold;
   }
-
+  
   .result,
   .correct,
   .correct-num {
     font-size: 1.5em;
     margin: 10px 0;
   }
-
+  
   .next {
     cursor: pointer;
     color: white;
+    margin-top: 10px;
   }
 
   .final {

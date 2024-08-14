@@ -12,7 +12,6 @@ import { CommonService } from '../../services/common.service';
 
 export class TashizanDojoComponent implements OnInit {
 
-
   // 生成する問題文の数字
   num1: number = 0;
   num2: number = 0;
@@ -45,8 +44,8 @@ export class TashizanDojoComponent implements OnInit {
   // 正解した数
   correctCount: number = 0;
 
-  // 問題数を設定
-  total: number = 5;
+  // 全問題数の表示
+  total: number = 0;
 
   // 問題数の表示
   totalText: string | number = `もんだいすう ${this.count} / ${this.total}`;
@@ -69,30 +68,59 @@ export class TashizanDojoComponent implements OnInit {
   finalTime: string = '';
   showFinalTime: boolean = false;
 
+  // 問題リスト
+  problemList: { num1: number, num2: number }[] = [];
+
+  // 現在の問題のインデックス
+  currentProblemIndex: number = 0;
+
+  // 左辺・右辺の数を設定
+  LRNum: number = 1;
+
   constructor(private commonService: CommonService) { }
 
   ngOnInit(): void {
-    this.displayProblem();
+    this.generateProblemList();  // 全ての可能な問題を生成
+    this.shuffleProblemList();   // リストをシャッフル
+    this.total = this.problemList.length;  // 問題数を設定
+    this.displayProblem();  // 最初の問題を表示
+    console.log(this.problemList)
   }
 
-  // 問題文を表示する関数
+  // すべての可能な問題の組み合わせを生成
+  generateProblemList(): void {
+    for (let i = 0; i <= this.LRNum; i++) {
+      for (let j = 0; j <= this.LRNum; j++) {
+        // 答えが10以下の組み合わせのみ追加
+        if (i + j <= 10) { 
+          this.problemList.push({ num1: i, num2: j });
+        }
+      }
+    }
+  }
+
+  // 問題リストをシャッフル
+  shuffleProblemList(): void {
+    for (let i = this.problemList.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [this.problemList[i], this.problemList[j]] = [this.problemList[j], this.problemList[i]];
+    }
+  }
+
+  // 問題文を表示
   displayProblem(): void {
     this.commonService.playSound(this.commonService.startAudio);
     this.selectedButtonIndex = null;
     this.isClicked = false;
     this.totalText = `もんだいすう ${this.count} / ${this.total}`;
 
-    // 問題生成
-    let validProblem = false;
-    while (!validProblem) {
-      const { num1, num2 } = this.commonService.generateNumbers(10);
-      this.num1 = num1;
-      this.num2 = num2;
-      validProblem = this.commonService.isProblemValid(this.num1, this.num2, this.prevNum1, this.prevNum2, true, 10);
+    if (this.currentProblemIndex < this.problemList.length) {
+      const currentProblem = this.problemList[this.currentProblemIndex];
+      this.num1 = currentProblem.num1;
+      this.num2 = currentProblem.num2;
+      this.prevNum1 = this.num1;
+      this.prevNum2 = this.num2;
     }
-
-    this.prevNum1 = this.num1;
-    this.prevNum2 = this.num2;
   }
 
   // ボタンクリック時の処理
@@ -108,14 +136,14 @@ export class TashizanDojoComponent implements OnInit {
     }
     this.clickCount++;
 
-    if (this.clickCount <= 5) {
-      // クリック回数が36回以下の場合、秒数を測定
+    if (this.clickCount <= this.problemList.length) {
+      // クリック回数が規定数以下の場合、秒数を測定
       const currentTime: any = new Date();
       const elapsedTime = Math.floor((currentTime - this.startTime) / 1000);
       const minutes = Math.floor(elapsedTime / 60);
       const seconds = elapsedTime % 60;
 
-      if (this.clickCount === 5) {
+      if (this.clickCount === this.problemList.length) {
         if (minutes > 0) {
           this.finalTime = `かかったじかん: ${minutes}ふん${seconds}びょう`
         } else {
@@ -153,10 +181,9 @@ export class TashizanDojoComponent implements OnInit {
     this.correctNum = null;
     this.showNextButton = false;
 
-    // 出題数のカウント
     this.count++;
+    this.currentProblemIndex++;
 
-    // 問題文の表示
     this.displayProblem();
   }
 
@@ -177,6 +204,10 @@ export class TashizanDojoComponent implements OnInit {
     this.clickCount = 0;
     this.finalTime = '';
     this.showFinalTime = false;
+
+    // 問題文のリセット
+    this.currentProblemIndex = 0;
+    this.shuffleProblemList();
 
     // 問題文の表示
     this.displayProblem();
