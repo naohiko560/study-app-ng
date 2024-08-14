@@ -8,6 +8,7 @@ import { TashizanDojoComponent } from './components/tashizan-dojo/tashizan-dojo.
 import { Hikizan1Component } from './components/hikizan1/hikizan1.component';
 import { Hikizan2Component } from './components/hikizan2/hikizan2.component';
 import { Hikizan3Component } from './components/hikizan3/hikizan3.component';
+import { HikizanDojoComponent } from './components/hikizan-dojo/hikizan-dojo.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -17,7 +18,8 @@ export const routes: Routes = [
   { path: 'tashizan-dojo', component: TashizanDojoComponent },
   { path: 'hikizan1', component: Hikizan1Component },
   { path: 'hikizan2', component: Hikizan2Component },
-  { path: 'hikizan3', component: Hikizan3Component }
+  { path: 'hikizan3', component: Hikizan3Component },
+  { path: 'hikizan-dojo', component: HikizanDojoComponent }
 ];
 
 @NgModule({

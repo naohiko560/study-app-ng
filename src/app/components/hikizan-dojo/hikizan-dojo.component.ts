@@ -3,14 +3,14 @@ import { CommonModule } from '@angular/common';
 import { CommonService } from '../../services/common.service';
 
 @Component({
-  selector: 'app-tashizan-dojo',
+  selector: 'app-hikizan-dojo',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './tashizan-dojo.component.html',
-  styleUrl: './tashizan-dojo.component.scss'
+  templateUrl: './hikizan-dojo.component.html',
+  styleUrl: './hikizan-dojo.component.scss'
 })
 
-export class TashizanDojoComponent implements OnInit {
+export class HikizanDojoComponent implements OnInit {
 
   // 生成する問題文の数字
   num1: number = 0;
@@ -75,12 +75,13 @@ export class TashizanDojoComponent implements OnInit {
   currentProblemIndex: number = 0;
 
   // 左辺・右辺の数を設定
-  LRNum: number = 9;
+  LRNum: number = 10;
 
   constructor(private commonService: CommonService) { }
 
   ngOnInit(): void {
     this.generateProblemList();  // 全ての可能な問題を生成
+    console.log(this.problemList)
     this.shuffleProblemList();   // リストをシャッフル
     this.total = this.problemList.length;  // 問題数を設定
     this.displayProblem();  // 最初の問題を表示
@@ -90,8 +91,8 @@ export class TashizanDojoComponent implements OnInit {
   generateProblemList(): void {
     for (let i = 0; i <= this.LRNum; i++) {
       for (let j = 0; j <= this.LRNum; j++) {
-        // 答えが10以下の組み合わせのみ追加
-        if (i + j <= 10 && i !== 0) { 
+        // 問題文や答えの条件を追加
+        if (i - j <= 10 && i !== 0 && j !== 0 && 0 <= i - j && j !== 10) {
           this.problemList.push({ num1: i, num2: j });
         }
       }
@@ -158,7 +159,7 @@ export class TashizanDojoComponent implements OnInit {
   // 答えをチェックする関数
   checkAnswer(): void {
     const { isCorrect, correctAnswer, resultMessage, finalText, updatedCorrectCount } =
-      this.commonService.checkAnswer(this.num1, this.num2, this.buttonText!, true, this.correctCount, this.total, this.count);
+      this.commonService.checkAnswer(this.num1, this.num2, this.buttonText!, false, this.correctCount, this.total, this.count);
 
     this.resultMessage = resultMessage;
     this.correctText = !isCorrect ? 'せいかいは、' : '';
