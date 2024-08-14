@@ -2,8 +2,8 @@
   <p class="total">{{ totalText }}</p>
   <div class="problem" *ngIf="showProblem">{{ num1 }} - {{ num2 }}</div>
   <p class="correct problem" *ngIf="showCorrect">{{ correctNum }}</p>
-  <button class="button next dojo" *ngIf="showNextButton" (click)="nextProblem()">つぎのもんだい11</button>
-  <button class="button next dojo" *ngIf="showAnswerButton" (click)="answerProblem()">つぎのもんだい2</button>
+  <button class="button next dojo" *ngIf="showNextButton" (click)="nextProblem()">つぎのもんだい</button>
+  <button class="button next dojo" *ngIf="showAnswerButton">つぎのもんだい</button>
   <p class="text final dojo" *ngIf="showFinalTime">{{ finalTime }}</p>
   <button class="button new dojo" *ngIf="showNewButton" (click)="newProblem() ">もういちどちょうせん</button>
 </div>

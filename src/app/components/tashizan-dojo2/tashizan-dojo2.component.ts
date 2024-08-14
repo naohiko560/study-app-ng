@@ -180,13 +180,19 @@ export class TashizanDojo2Component implements OnInit {
     this.showNextButton = false;
     this.showProblem = false;
     // this.checkAnswer();
+
+    this.answerProblem();
   }
-  
+
   answerProblem() {
-    this.showAnswerButton = false;
-    this.showNextButton = true;
-    this.showCorrect = false;
-    this.showProblem = true;
+    if (this.clickCount < this.total) {
+      setTimeout(() => {
+        this.showAnswerButton = false;
+        this.showNextButton = true;
+        this.showCorrect = false;
+        this.showProblem = true;
+      }, 500)
+    }
   }
 
   // 答えをチェックする関数
@@ -213,7 +219,7 @@ export class TashizanDojo2Component implements OnInit {
     this.correctText = '';
     this.correctNum = null;
     this.showNextButton = true;
-   
+
     if (this.count < this.problemList.length) {
       this.count++;
     }
