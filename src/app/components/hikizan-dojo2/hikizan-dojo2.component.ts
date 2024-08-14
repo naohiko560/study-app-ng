@@ -64,7 +64,7 @@ export class HikizanDojo2Component implements OnInit {
 
   // 時間測定用
   startTime: any = null;
-  clickCount = 1;
+  clickCount = 0;
   finalTime: string = '';
   showFinalTime: boolean = false;
 
@@ -76,6 +76,14 @@ export class HikizanDojo2Component implements OnInit {
 
   // 左辺・右辺の数を設定
   LRNum: number = 10;
+  // LRNum: number = 2;
+
+  // 答えの表示
+  showCorrect: boolean = false;
+
+  showAnswerButton: boolean = false;
+
+  showProblem: boolean = true;
 
   constructor(private commonService: CommonService) { }
 
@@ -133,6 +141,7 @@ export class HikizanDojo2Component implements OnInit {
       // 最初のクリックの場合、開始時間を設定
       this.startTime = new Date();
     }
+
     this.clickCount++;
 
     if (this.clickCount <= this.problemList.length) {
@@ -144,16 +153,18 @@ export class HikizanDojo2Component implements OnInit {
 
       if (this.clickCount === this.problemList.length) {
         if (minutes > 0) {
-          this.finalTime = `かかったじかん: ${minutes}ふん${seconds}びょう`
+          this.finalTime = `${minutes}ふん${seconds}びょう`
         } else {
-          this.finalTime = `かかったじかん: ${seconds}びょう`
+          this.finalTime = `${seconds}びょう`
         }
         this.showFinalTime = true;
+        this.showAnswerButton = false;
+        this.showNewButton = true;
         this.commonService.playSound(this.commonService.finalAudio);
       }
     }
 
-    if (this.count < this.total) {
+    if (this.count <= this.total) {
       this.showNextButton = true;
     } else {
       // this.finalText = finalText;
@@ -161,26 +172,40 @@ export class HikizanDojo2Component implements OnInit {
       this.showNextButton = false;
     }
 
+    this.correctNum = this.num1 - this.num2;
+    this.showCorrect = true;
+    if ((this.clickCount < this.problemList.length)) {
+      this.showAnswerButton = true;
+    }
+    this.showNextButton = false;
+    this.showProblem = false;
     // this.checkAnswer();
   }
 
-  // 答えをチェックする関数
-  checkAnswer(): void {
-    const { isCorrect, correctAnswer, resultMessage, finalText, updatedCorrectCount } =
-      this.commonService.checkAnswer(this.num1, this.num2, this.buttonText!, true, this.correctCount, this.total, this.count);
-
-    this.resultMessage = resultMessage;
-    this.correctText = !isCorrect ? 'せいかいは、' : '';
-    this.correctNum = !isCorrect ? correctAnswer : null;
-    this.correctCount = updatedCorrectCount;
-
-    if (this.count < this.total) {
-      this.showNextButton = true;
-    } else {
-      this.finalText = finalText;
-      this.showNewButton = true;
-    }
+  answerProblem() {
+    this.showAnswerButton = false;
+    this.showNextButton = true;
+    this.showCorrect = false;
+    this.showProblem = true;
   }
+
+  // 答えをチェックする関数
+  // checkAnswer(): void {
+  //   const { isCorrect, correctAnswer, resultMessage, finalText, updatedCorrectCount } =
+  //     this.commonService.checkAnswer(this.num1, this.num2, this.buttonText!, true, this.correctCount, this.total, this.count);
+
+  //   this.resultMessage = resultMessage;
+  //   this.correctText = !isCorrect ? 'せいかいは、' : '';
+  //   this.correctNum = !isCorrect ? correctAnswer : null;
+  //   this.correctCount = updatedCorrectCount;
+
+  //   if (this.count < this.total) {
+  //     this.showNextButton = true;
+  //   } else {
+  //     this.finalText = finalText;
+  //     this.showNewButton = true;
+  //   }
+  // }
 
   // 次の問題を表示する関数
   nextProblem(): void {
@@ -188,7 +213,10 @@ export class HikizanDojo2Component implements OnInit {
     this.correctText = '';
     this.correctNum = null;
     this.showNextButton = true;
-    this.count++;
+
+    if (this.count < this.problemList.length) {
+      this.count++;
+    }
     this.currentProblemIndex++;
 
     this.onButtonClick()
@@ -210,7 +238,7 @@ export class HikizanDojo2Component implements OnInit {
 
     // 測定時間のリセット
     this.startTime = null;
-    this.clickCount = 1;
+    this.clickCount = 0;
     this.finalTime = '';
     this.showFinalTime = false;
 
@@ -219,6 +247,8 @@ export class HikizanDojo2Component implements OnInit {
     this.shuffleProblemList();
 
     // 問題文の表示
+    this.showProblem = true;
+    this.showCorrect = false;
     this.displayProblem();
   }
 }
