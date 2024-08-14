@@ -12,21 +12,14 @@ import { CommonService } from '../../services/common.service';
 
 export class TashizanDojoComponent implements OnInit {
 
-  // 答えが10以下の組み合わせをシャッフルした配列
-  comboShuffle: any;
-
-  // 現在の問題のインデックス
-  index: number = 0;
-
-  // ゲーム開始時間
-  startTime: Date | null = null;
-
-  // 経過時間
-  elapsedTime: number = 0;
 
   // 生成する問題文の数字
   num1: number = 0;
   num2: number = 0;
+
+  // 前回の問題文の数字
+  prevNum1: number = 0;
+  prevNum2: number = 0;
 
   // ボタンを押したときの数字
   buttonText: number | null = null;
@@ -52,8 +45,8 @@ export class TashizanDojoComponent implements OnInit {
   // 正解した数
   correctCount: number = 0;
 
-  // 問題数を設定（答えが10以下になる組み合わせ）
-  total: number = 0;
+  // 問題数を設定
+  total: number = 5;
 
   // 問題数の表示
   totalText: string | number = `もんだいすう ${this.count} / ${this.total}`;
@@ -70,57 +63,36 @@ export class TashizanDojoComponent implements OnInit {
   // ボタンに表示する数字
   buttons: number[] = Array.from({ length: 11 }, (_, i) => i);
 
+  // 時間測定用
+  startTime: any = null;
+  clickCount = 0;
+  finalTime: string = '';
+  showFinalTime: boolean = false;
+
   constructor(private commonService: CommonService) { }
 
   ngOnInit(): void {
-    this.resetGame();
-  }
-
-  // ゲームをリセットする関数
-  resetGame(): void {
-    this.index = 0;
-    this.startTime = null;
-    this.elapsedTime = 0;
-    this.count = 1;
-    this.correctCount = 0;
-    this.finalText = null;
-    this.comboShuffle = this.generateAllCombinations();
-    this.comboShuffle = this.commonService.shuffle(this.comboShuffle);
-    this.total = 31;
     this.displayProblem();
-  }
-
-  // 答えが10以下になる全ての組み合わせを生成する関数
-  generateAllCombinations(): number[][] {
-    const firstNum = Array.from({ length: 11 }, (_, i) => i);
-    const secondNum = Array.from({ length: 11 }, (_, i) => i);
-
-    const combo: number[][] = [];
-
-    for (const valA of firstNum) {
-      for (const valB of secondNum) {
-        if (valA + valB <= 10) {
-          combo.push([valA, valB]);
-        }
-      }
-    }
-
-    return combo;
   }
 
   // 問題文を表示する関数
   displayProblem(): void {
+    this.commonService.playSound(this.commonService.startAudio);
     this.selectedButtonIndex = null;
     this.isClicked = false;
     this.totalText = `もんだいすう ${this.count} / ${this.total}`;
 
-    if (this.index === 0 && !this.startTime) {
-      this.startTime = new Date(); // スタート時間を記録
+    // 問題生成
+    let validProblem = false;
+    while (!validProblem) {
+      const { num1, num2 } = this.commonService.generateNumbers(10);
+      this.num1 = num1;
+      this.num2 = num2;
+      validProblem = this.commonService.isProblemValid(this.num1, this.num2, this.prevNum1, this.prevNum2, true, 10);
     }
 
-    if (this.index < this.comboShuffle.length) {
-      [this.num1, this.num2] = this.comboShuffle[this.index];
-    }
+    this.prevNum1 = this.num1;
+    this.prevNum2 = this.num2;
   }
 
   // ボタンクリック時の処理
@@ -128,6 +100,31 @@ export class TashizanDojoComponent implements OnInit {
     this.selectedButtonIndex = index;
     this.isClicked = true;
     this.buttonText = button;
+
+    // 時間測定を開始する
+    if (this.startTime === null) {
+      // 最初のクリックの場合、開始時間を設定
+      this.startTime = new Date();
+    }
+    this.clickCount++;
+
+    if (this.clickCount <= 5) {
+      // クリック回数が36回以下の場合、秒数を測定
+      const currentTime: any = new Date();
+      const elapsedTime = Math.floor((currentTime - this.startTime) / 1000);
+      const minutes = Math.floor(elapsedTime / 60);
+      const seconds = elapsedTime % 60;
+
+      if (this.clickCount === 5) {
+        if (minutes > 0) {
+          this.finalTime = `かかったじかん: ${minutes}ふん${seconds}びょう`
+        } else {
+          this.finalTime = `かかったじかん: ${seconds}びょう`
+        }
+        this.showFinalTime = true;
+      }
+    }
+
     this.checkAnswer();
   }
 
@@ -144,9 +141,7 @@ export class TashizanDojoComponent implements OnInit {
     if (this.count < this.total) {
       this.showNextButton = true;
     } else {
-      this.calculateElapsedTime(); // 時間計測
       this.finalText = finalText;
-      this.finalText += ` 経過時間: ${this.elapsedTime}秒`;
       this.showNewButton = true;
     }
   }
@@ -160,7 +155,6 @@ export class TashizanDojoComponent implements OnInit {
 
     // 出題数のカウント
     this.count++;
-    this.index++;
 
     // 問題文の表示
     this.displayProblem();
@@ -168,15 +162,23 @@ export class TashizanDojoComponent implements OnInit {
 
   // 新しい問題を表示する関数
   newProblem(): void {
-    this.resetGame();
-  }
+    this.resultMessage = '';
+    this.correctText = '';
+    this.correctNum = null;
+    this.showNewButton = false;
 
-  // 経過時間を計算する関数
-  calculateElapsedTime(): void {
-    if (this.startTime) {
-      const currentTime = new Date();
-      this.elapsedTime = Math.floor((currentTime.getTime() - this.startTime.getTime()) / 1000);
-    }
+    // 問題数のリセット
+    this.finalText = '';
+    this.count = 1;
+    this.correctCount = 0;
+
+    // 測定時間のリセット
+    this.startTime = null;
+    this.clickCount = 0;
+    this.finalTime = '';
+    this.showFinalTime = false;
+
+    // 問題文の表示
+    this.displayProblem();
   }
 }
-
