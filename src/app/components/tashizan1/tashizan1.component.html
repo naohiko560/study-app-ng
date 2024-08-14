@@ -8,9 +8,9 @@
       </button>
     </div>
   </div>
+  <button class="button next" *ngIf="showNextButton" (click)="nextProblem()">つぎのもんだい</button>
   <p class="result">{{ resultMessage }}</p>
   <p class="correct">{{ correctText }}<span class="correct-num">{{ correctNum }}</span></p>
-  <button class="button next" *ngIf="showNextButton" (click)="nextProblem()">つぎのもんだい</button>
   <p class="final">{{ finalText }}</p>
   <button class="button new" *ngIf="showNewButton" (click)="newProblem()">もういちどちょうせん</button>
 </div>
