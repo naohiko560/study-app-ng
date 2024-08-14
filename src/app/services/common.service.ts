@@ -10,6 +10,7 @@ export class CommonService {
   correctAudio = 'sounds/correct.mp3';
   incorrectAudio = 'sounds/incorrect.mp3';
   startAudio = 'sounds/start.mp3';
+  finalAudio = 'sounds/final.mp3';
 
   constructor(@Inject(PLATFORM_ID) private platformId: object) { }
 

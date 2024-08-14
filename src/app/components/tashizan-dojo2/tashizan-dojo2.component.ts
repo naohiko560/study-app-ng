@@ -3,14 +3,14 @@ import { CommonModule } from '@angular/common';
 import { CommonService } from '../../services/common.service';
 
 @Component({
-  selector: 'app-hikizan-dojo',
+  selector: 'app-tashizan-dojo',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './hikizan-dojo.component.html',
-  styleUrl: './hikizan-dojo.component.scss'
+  templateUrl: './tashizan-dojo2.component.html',
+  styleUrl: './tashizan-dojo2.component.scss'
 })
 
-export class HikizanDojoComponent implements OnInit {
+export class TashizanDojoComponent2 implements OnInit {
 
   // 生成する問題文の数字
   num1: number = 0;
@@ -33,7 +33,7 @@ export class HikizanDojoComponent implements OnInit {
   correctNum: number | null = null;
 
   // 「つぎのもんだい」ボタンを表示するかどうか
-  showNextButton: boolean = false;
+  showNextButton: boolean = true;
 
   // 「もういちどちょうせん」ボタンを表示するかどうか
   showNewButton: boolean = false;
@@ -64,7 +64,7 @@ export class HikizanDojoComponent implements OnInit {
 
   // 時間測定用
   startTime: any = null;
-  clickCount = 0;
+  clickCount = 1;
   finalTime: string = '';
   showFinalTime: boolean = false;
 
@@ -75,7 +75,7 @@ export class HikizanDojoComponent implements OnInit {
   currentProblemIndex: number = 0;
 
   // 左辺・右辺の数を設定
-  LRNum: number = 10;
+  LRNum: number = 2;
 
   constructor(private commonService: CommonService) { }
 
@@ -90,8 +90,8 @@ export class HikizanDojoComponent implements OnInit {
   generateProblemList(): void {
     for (let i = 0; i <= this.LRNum; i++) {
       for (let j = 0; j <= this.LRNum; j++) {
-        // 問題文や答えの条件を追加
-        if (i - j <= 10 && i !== 0 && j !== 0 && 0 <= i - j && j !== 10) {
+        // 答えが10以下の組み合わせのみ追加
+        if (i + j <= 10 && i !== 0) {
           this.problemList.push({ num1: i, num2: j });
         }
       }
@@ -108,7 +108,9 @@ export class HikizanDojoComponent implements OnInit {
 
   // 問題文を表示
   displayProblem(): void {
-    this.commonService.playSound(this.commonService.startAudio);
+    if (this.clickCount !== this.problemList.length) {
+      this.commonService.playSound(this.commonService.startAudio);
+    }
     this.selectedButtonIndex = null;
     this.isClicked = false;
     this.totalText = `もんだいすう ${this.count} / ${this.total}`;
@@ -123,10 +125,8 @@ export class HikizanDojoComponent implements OnInit {
   }
 
   // ボタンクリック時の処理
-  onButtonClick(button: number, index: number): void {
-    this.selectedButtonIndex = index;
+  onButtonClick(): void {
     this.isClicked = true;
-    this.buttonText = button;
 
     // 時間測定を開始する
     if (this.startTime === null) {
@@ -149,16 +149,25 @@ export class HikizanDojoComponent implements OnInit {
           this.finalTime = `かかったじかん: ${seconds}びょう`
         }
         this.showFinalTime = true;
+        this.commonService.playSound(this.commonService.finalAudio);
       }
     }
 
-    this.checkAnswer();
+    if (this.count < this.total) {
+      this.showNextButton = true;
+    } else {
+      // this.finalText = finalText;
+      this.showNewButton = true;
+      this.showNextButton = false;
+    }
+
+    // this.checkAnswer();
   }
 
   // 答えをチェックする関数
   checkAnswer(): void {
     const { isCorrect, correctAnswer, resultMessage, finalText, updatedCorrectCount } =
-      this.commonService.checkAnswer(this.num1, this.num2, this.buttonText!, false, this.correctCount, this.total, this.count);
+      this.commonService.checkAnswer(this.num1, this.num2, this.buttonText!, true, this.correctCount, this.total, this.count);
 
     this.resultMessage = resultMessage;
     this.correctText = !isCorrect ? 'せいかいは、' : '';
@@ -178,11 +187,11 @@ export class HikizanDojoComponent implements OnInit {
     this.resultMessage = '';
     this.correctText = '';
     this.correctNum = null;
-    this.showNextButton = false;
-
+    this.showNextButton = true;
     this.count++;
     this.currentProblemIndex++;
 
+    this.onButtonClick()
     this.displayProblem();
   }
 
@@ -192,6 +201,7 @@ export class HikizanDojoComponent implements OnInit {
     this.correctText = '';
     this.correctNum = null;
     this.showNewButton = false;
+    this.showNextButton = true;
 
     // 問題数のリセット
     this.finalText = '';
@@ -200,7 +210,7 @@ export class HikizanDojoComponent implements OnInit {
 
     // 測定時間のリセット
     this.startTime = null;
-    this.clickCount = 0;
+    this.clickCount = 1;
     this.finalTime = '';
     this.showFinalTime = false;
 

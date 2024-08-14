@@ -120,6 +120,15 @@
   font-size: 1em;
   font-weight: bold;
 }
+.game .button.next.dojo {
+  margin-top: 30px;
+}
+.game .button.new.dojo {
+  margin-top: 50px;
+}
+.game .text.final.dojo {
+  margin-top: 20px;
+}
 .game .result,
 .game .correct,
 .game .correct-num {
