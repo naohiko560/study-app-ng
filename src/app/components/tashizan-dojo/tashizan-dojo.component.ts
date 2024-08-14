@@ -75,7 +75,7 @@ export class TashizanDojoComponent implements OnInit {
   currentProblemIndex: number = 0;
 
   // 左辺・右辺の数を設定
-  LRNum: number = 1;
+  LRNum: number = 9;
 
   constructor(private commonService: CommonService) { }
 
@@ -92,7 +92,7 @@ export class TashizanDojoComponent implements OnInit {
     for (let i = 0; i <= this.LRNum; i++) {
       for (let j = 0; j <= this.LRNum; j++) {
         // 答えが10以下の組み合わせのみ追加
-        if (i + j <= 10) { 
+        if (i + j <= 10 && i !== 0) { 
           this.problemList.push({ num1: i, num2: j });
         }
       }
